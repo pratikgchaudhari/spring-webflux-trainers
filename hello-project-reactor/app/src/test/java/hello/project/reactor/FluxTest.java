@@ -58,7 +58,7 @@ public class FluxTest {
     }
 
     @Test
-    void shouldModifyTheContentsOfFluxUsingTheMapOperator() {
+    void shouldTransformTheContentsOfFluxUsingTheMapOperator() {
         final var fluxTest = Flux
                 .fromIterable(Arrays.asList(1, 2, 3, 4))
                 .map(item -> item * item);
@@ -69,7 +69,7 @@ public class FluxTest {
     }
 
     @Test
-    void shouldModifyTheContentsOfFluxUsingTheFilterOperator() {
+    void shouldTransformTheContentsOfFluxUsingTheFilterOperator() {
         final var fluxTest = Flux
                 .from(Flux.range(1, 10))
                 .filter(item -> (item > 2 && item < 8));
