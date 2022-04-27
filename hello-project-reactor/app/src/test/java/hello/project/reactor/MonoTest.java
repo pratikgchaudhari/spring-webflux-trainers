@@ -96,4 +96,29 @@ class MonoTest {
                 .expectComplete()
                 .verify();
     }
+
+    @Test
+    void shouldTransformMonoUsingTheMapOperator() {
+
+        final var testMono = Mono.just(4).map(Math::sqrt);
+
+        StepVerifier
+                .create(testMono)
+                .expectNext(2.0)
+                .expectComplete()
+                .verify();
+    }
+
+    @Test
+    void shouldTransformErrorMonoUsingTheOnErrorMap() {
+
+        final var testMono = Mono
+                .error(new Exception("Internal Server Error"))
+                .onErrorMap(genericError -> new ApplicationFailureException("Oops! Something went wrong on our side. We'll ask our engineers to take a look."));
+
+        StepVerifier
+                .create(testMono)
+                .expectErrorMessage("Oops! Something went wrong on our side. We'll ask our engineers to take a look.")
+                .verify();
+    }
 }
