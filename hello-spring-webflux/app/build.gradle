@@ -9,12 +9,16 @@
 plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     id 'application'
+    id 'org.springframework.boot' version '2.5.3'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 }
 
 repositories {
     // Use Maven Central for resolving dependencies.
     mavenCentral()
 }
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
 
 dependencies {
     // Use JUnit Jupiter API for testing.
@@ -29,6 +33,15 @@ dependencies {
     // https://mvnrepository.com/artifact/org.springframework/spring-webflux
     implementation 'org.springframework:spring-webflux:5.3.19'
 
+    implementation 'io.projectreactor:reactor-core:3.4.17'
+    testImplementation 'io.projectreactor:reactor-test:3.4.17'
+
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
+
+    testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 application {
