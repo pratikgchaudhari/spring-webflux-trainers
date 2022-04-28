@@ -3,6 +3,10 @@
  */
 package hello.project.reactor;
 
+import reactor.core.publisher.Flux;
+
+import java.util.List;
+
 public class App {
     public String getGreeting() {
         return "Hello World!";
@@ -11,4 +15,19 @@ public class App {
     public static void main(String[] args) {
         System.out.println(new App().getGreeting());
     }
+
+
+    public Flux<Integer> createFlux() {
+        List<Integer> numbers = List.of(5,6,7,8);
+        return Flux.fromIterable(numbers).log();
+    }
+
+    public Flux<String> makeUpperCase() {
+        Flux<String> items = Flux.fromIterable(List.of("a", "b", "b", "d"));
+
+        items.map(String::toUpperCase);
+
+        return items;
+    }
+
 }
