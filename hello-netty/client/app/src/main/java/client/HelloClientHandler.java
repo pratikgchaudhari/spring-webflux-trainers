@@ -6,8 +6,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.CharsetUtil;
 
-import java.time.Instant;
-
 public class HelloClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
 
     @Override
