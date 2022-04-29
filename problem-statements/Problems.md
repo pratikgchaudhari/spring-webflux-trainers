@@ -22,3 +22,13 @@
 > 
 > As an SDE, your job is create all the necessary APIs to support the above features.
  
+### Problem 4
+>---
+> We have static functions getGoodsProducts, getPantryProducts and defaultProducts in the Product Factory, which return Flux of type ProductModel.
+> 
+> Complete the searchProducts function in Products Service.
+> 
+> It takes a choice of productType as input
+> and returns all products available from getGoodsProducts and getPantryProducts that are of the same productType. 
+> 
+> In case none of such products exist it returns the values from defaultProducts.
