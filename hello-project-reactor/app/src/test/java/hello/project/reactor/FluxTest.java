@@ -1,6 +1,8 @@
 package hello.project.reactor;
 
 import org.junit.jupiter.api.Test;
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
@@ -113,5 +115,104 @@ public class FluxTest {
                 .expectNextSequence(Arrays.asList(1, 2, 3, 1, 4, 9))
                 .expectComplete()
                 .verify();
+    }
+
+    @Test
+    void shouldCombineMultipleFluxOfIntegers() {
+        var flux = Flux.from(Flux.range(1, 3))
+                .zipWith(Flux.range(4, 3).map(Math::sqrt));
+
+        flux.doOnNext(System.out::println).subscribe();
+    }
+
+    @Test
+    void shouldDoSomethingOnSubscription() {
+        var flux = Flux.just(1, 2, 3)
+                .doOnSubscribe(subscription -> subscription.request(1))
+                .doOnNext(System.out::println)
+                .subscribe();
+    }
+
+    @Test
+    void shouldDoSomethingOnRequest() {
+        var flux = Flux.just(1, 2, 3)
+                .doOnRequest(System.out::println)
+                .doOnNext(System.out::println)
+                .subscribe();
+    }
+
+    @Test
+    void shouldDoSomethingOnError() {
+        var flux = Flux.error(new Exception("Test Exception"))
+                .doOnError(e -> System.out.println("Encountered error while processing request"));
+
+        StepVerifier.create(flux)
+                .expectErrorMessage("Test Exception")
+                .verify();
+    }
+
+    @Test
+    void shouldDoSomethingOnTermination() {
+        var flux = Flux.just(1, 2, 3)
+                .doOnTerminate(() -> System.out.println("The Flux has terminated"));
+
+        StepVerifier.create(flux)
+                .expectNextCount(3)
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldDoSomethingOnFinally() {
+        var flux = Flux
+                .error(new Exception("Internal Server Error"))
+                //                .just(1,2,3)
+                .doOnComplete(() -> System.out.println("Flux has completed successfully"))
+                .doOnError(e -> {
+                    System.out.println("Flux has failed with an error: " + e.getMessage());
+                })
+                .doFinally(signalType -> {
+                    switch (signalType.toString()) {
+                        case "onComplete":
+                            System.out.println("Flux has completed successfully");
+                            break;
+                        case "onError":
+                            System.out.println("Flux has failed with an error");
+                            break;
+                    }
+                });
+
+        StepVerifier.create(flux)
+//                .expectNextCount(3)
+//                .verifyComplete();
+                .expectErrorMessage("Internal Server Error")
+                .verify();
+    }
+
+    @Test
+    void shouldDoSomethingOnCancel() {
+        var flux = Flux.just(1, 2, 3)
+                .doOnCancel(() -> System.out.println("The operation is cancelled"))
+                .doOnNext(System.out::println)
+                .subscribeWith(new Subscriber<Integer>() {
+                    @Override
+                    public void onSubscribe(Subscription s) {
+                        s.cancel();
+                    }
+
+                    @Override
+                    public void onNext(Integer integer) {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable t) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 }
